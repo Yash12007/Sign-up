@@ -1,0 +1,107 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Yash12007 | Sign up</title>
+    <link rel="icon" href="https://icons.getbootstrap.com/assets/icons/box.svg">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+  </head>
+  <style>
+    body{
+        background: black;
+        color: white;
+    }
+    #load{
+        background-image: linear-gradient(to right, cyan, blue);
+        width: 100%;
+        height: 3px;
+        position: absolute;
+        top: 55px;
+        left: 0;
+    }
+    #main{
+        position: absolute;
+        top: 10%;
+        height: 90%;
+        width: 100%;
+        left: 0;
+        display: grid;
+        place-items: center;
+    }
+    #form{
+        background: none;
+        width: 300px;
+        height: 50%;
+        border-radius: 30px;
+        border: solid cyan 1px;
+    }
+  </style>
+  <body>
+    <nav class="navbar navbar-expand-lg" data-bs-theme="dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="https://yash12007.github.io/">
+            <i class="bi bi-box"></i>
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-box" viewBox="0 0 16 16">
+                <path d="M8.186 1.113a.5.5 0 0 0-.372 0L1.846 3.5 8 5.961 14.154 3.5 8.186 1.113zM15 4.239l-6.5 2.6v7.922l6.5-2.6V4.24zM7.5 14.762V6.838L1 4.239v7.923l6.5 2.6zM7.443.184a1.5 1.5 0 0 1 1.114 0l7.129 2.852A.5.5 0 0 1 16 3.5v8.662a1 1 0 0 1-.629.928l-7.185 2.874a.5.5 0 0 1-.372 0L.63 13.09a1 1 0 0 1-.63-.928V3.5a.5.5 0 0 1 .314-.464L7.443.184z"/>
+            </svg>
+            Yash12007
+          </a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link active" aria-current="page" href="https://yash12007.github.io/">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="https://yash12007.github.io/Max#about">About</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="https://yash12007.github.io/Max#services">Services</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="https://yash12007.github.io/Max/contact.html">Contact</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+    </nav>
+    <div id="load"></div>
+    <div id="main" onclick="signInWithGoogle()">
+        <div id="form" style="place-items: center; display: grid;">
+            <h3>Sign up with Google</h3>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm" crossorigin="anonymous"></script>
+  </body>
+  <script>
+    function signInWithGoogle() {
+        const datetime = Date();
+        // Using a third-party API to get IP address
+        fetch('https://api64.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+            const ipAddress = data.ip;
+            localStorage.setItem('IP', ipAddress);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+        localStorage.setItem('Signup-date', datetime);
+        const clientId = '364524252352-mueplfnejbmn0jupc9ut4j7kdsf7md8s.apps.googleusercontent.com';
+        const redirectUri = 'https://yash12007.github.io/';
+        const googleSignInUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${clientId}&redirect_uri=${redirectUri}&response_type=token&scope=email%20profile`;
+        window.open(googleSignInUrl, '_self');
+    }
+    function handleGoogleSignIn() {
+        const urlParams = new URLSearchParams(window.location.hash.substr(1));
+        const accessToken = urlParams.get('access_token');
+        if (accessToken) {
+            getUserInfo(accessToken);
+        }
+    }
+    handleGoogleSignIn();
+  </script>
+</html>
