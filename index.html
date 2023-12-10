@@ -11,16 +11,18 @@
     body{
         background: black;
         color: white;
-        overflow: hidden;
+        overflow: auto;
     }
     #signup-box{
-        position: fixed;
-        top: 0;
-        left: 0;
+        position: absolute;
+        top: 55px;
+        left: 10%;
+        right: 10%;
         height: 100%;
-        width: 100%;
+        width: 80%;
         place-items: center;
         display: grid;
+        overflow: auto;
     }
     #load{
         background-image: linear-gradient(to right, cyan, blue);
@@ -40,10 +42,10 @@
         }
     }
   </style>
-  <body>
+  <body data-bs-theme="dark">
     <div id="signup-box">
-        <div class="card" style="width: 18rem;" data-bs-theme="dark">
-            <img src="https://icons.getbootstrap.com/assets/icons/box.svg" class="card-img-top" alt="Logo.">
+        <div class="card" style="width: fit-content;">
+            <img src="https://icons.getbootstrap.com/assets/icons/box.svg" class="card-img-top" alt="Logo." width="150px" height="150px">
             <div class="card-body">
               <h5 class="card-title">Sign up to Yash12007</h5>
               <p class="card-text">
@@ -58,6 +60,13 @@
                 </svg>
                 Sign up with Google
               </a>
+              <button id="githubSignInBtn" class="btn btn-secondary">
+                <i class="bi bi-github"></i>
+                <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
+                    <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8"/>
+                </svg>
+                Sign up with GitHub
+              </button>
             </div>
         </div>
     </div>
@@ -98,6 +107,7 @@
         </div>
     </nav>
     <div id="load"></div>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
   </body>
   <script>
@@ -169,4 +179,56 @@
         console.log(error);
     }
   </script>
+  <script>
+    const GCI = 'Iv1.01a40b208ca5ec63';
+    const RL = 'https://yash12007.github.io';
+    document.getElementById('githubSignInBtn').addEventListener('click', () => {
+        const datetime = Date();
+        fetch('https://api64.ipify.org?format=json')
+        .then(response => response.json())
+        .then(data => {
+            const ipAddress = data.ip;
+            localStorage.setItem('IP', ipAddress);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+        localStorage.setItem('Signup-date', datetime);
+        window.location.href = `https://github.com/login/oauth/authorize?client_id=${GCI}&redirect_uri=${RL}&scope=user`;
+    });
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    if (code) {
+        axios.post('https://github.com/login/oauth/access_token', {
+            client_id: GCI,
+            client_secret: '52fafd82468e526f47ac3dc29f01b1831b12cd82',
+            code: code,
+            redirect_uri: RL,
+        })
+        .then(response => {
+            const accessToken = response.data.access_token;
+            console.log('Access Token:', accessToken);
+            localStorage.setItem('account', accessToken);
+            axios.get('https://api.github.com/user', {
+                headers: {
+                    Authorization: `Bearer ${accessToken}`,
+                },
+            })
+            .then(userResponse => {
+                const userName = userResponse.data.login;
+                const userProfileImage = userResponse.data.avatar_url;
+                console.log('GitHub Username:', userName);
+                localStorage.setItem('username', userName);
+                console.log('GitHub Profile Image:', userProfileImage);
+                localStorage.setItem('ProfilePicture', userProfileImage);
+            })
+            .catch(error => {
+                console.error('Error fetching user data:', error);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching access token:', error);
+        });
+    }
+    </script>
 </html>
